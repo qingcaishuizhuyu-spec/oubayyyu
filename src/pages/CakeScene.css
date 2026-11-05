@@ -1,0 +1,94 @@
+.cake-scene {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  background: #050505;
+  touch-action: none;
+  cursor: default;
+}
+
+.cake-mosaic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(68vw, 54rem);
+  height: min(68svh, 38rem);
+  overflow: hidden;
+  background: #030303;
+  box-shadow: 0 2.5rem 7rem rgb(0 0 0 / 64%);
+  transition:
+    transform 460ms var(--ease-out),
+    filter 1000ms var(--ease-out);
+  transform: translate(-50%, -50%) scale(var(--cake-scale));
+  transform-origin: var(--scene-origin, 50% 47%);
+}
+
+.cake-mosaic canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.cake-mosaic__status {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  color: rgb(255 255 255 / 58%);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+}
+
+.cake-scene__veil {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 42%;
+  pointer-events: none;
+  background: linear-gradient(to top, rgb(0 0 0 / 56%) 0%, transparent 100%);
+}
+
+.cake-scene__prompt {
+  position: absolute;
+  left: var(--page-gutter);
+  bottom: clamp(2.25rem, 7vh, 5rem);
+  width: min(58rem, calc(100vw - (var(--page-gutter) * 2)));
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  text-align: left;
+  text-wrap: balance;
+  transition:
+    opacity 500ms ease,
+    transform 900ms var(--ease-out);
+  text-shadow: 0 2px 28px rgb(0 0 0 / 60%);
+}
+
+.cake-scene.is-leaving .cake-mosaic {
+  filter: brightness(1.12) blur(1px);
+  transition:
+    transform 1850ms var(--ease-out),
+    filter 1850ms var(--ease-out);
+  transform: translate(-50%, -50%) scale(1.78);
+}
+
+.cake-scene.is-leaving .cake-scene__prompt {
+  opacity: 0;
+  transform: translateY(0.75rem);
+}
+
+@media (max-width: 48rem) {
+  .cake-scene__prompt {
+    bottom: clamp(2rem, 6vh, 3.5rem);
+    width: calc(100vw - (var(--page-gutter) * 2));
+  }
+
+  .cake-mosaic {
+    width: 72vw;
+    height: 68svh;
+  }
+}

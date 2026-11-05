@@ -1,0 +1,406 @@
+.record-scene {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 38rem;
+  overflow: hidden;
+  color: #f5f5f2;
+  background: #000;
+  user-select: none;
+  touch-action: none;
+}
+
+.record-scene__header {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.5rem);
+  right: clamp(1.25rem, 3vw, 2.5rem);
+  left: clamp(1.25rem, 3vw, 2.5rem);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  color: rgb(245 245 242 / 72%);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+.record-scene__stage {
+  position: absolute;
+  inset: 0;
+  perspective: 1250px;
+  perspective-origin: 50% 48%;
+  transform-style: preserve-3d;
+}
+
+.record-disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(clamp(15rem, 53vw, 43rem), 64svh);
+  height: min(clamp(15rem, 53vw, 43rem), 64svh);
+  border-radius: 50%;
+  opacity: var(--disc-opacity);
+  transform:
+    translate(-50%, -50%)
+    translate3d(var(--disc-x), var(--disc-y), var(--disc-depth))
+    translateX(var(--drag-shift))
+    rotateY(calc(var(--disc-rotation) + var(--drag-turn)))
+    scale(var(--disc-scale));
+  transform-style: preserve-3d;
+  transition:
+    transform 760ms var(--ease-out),
+    opacity 500ms ease,
+    filter 500ms ease;
+  filter: brightness(0.7);
+  cursor: grab;
+  will-change: transform;
+  --hover-lift: 0rem;
+}
+
+.record-disc.is-active {
+  filter: brightness(1.04);
+}
+
+.record-disc:hover {
+  --hover-lift: -1.05rem;
+}
+
+.record-disc:active {
+  cursor: grabbing;
+}
+
+.record-disc:disabled {
+  cursor: default;
+}
+
+.record-disc__body {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform:
+    translateY(var(--hover-lift))
+    rotateX(var(--hover-rotate-x, 0deg))
+    rotateY(var(--hover-rotate-y, 0deg));
+  transform-style: preserve-3d;
+  transition:
+    transform 360ms var(--ease-out),
+    filter 360ms ease;
+  filter: saturate(0.88);
+}
+
+.record-disc:hover .record-disc__body {
+  filter: brightness(1.12) saturate(1);
+}
+
+.record-disc:hover .record-disc__front {
+  box-shadow:
+    0 3rem 7rem rgb(0 0 0 / 76%),
+    inset 0 0 0 1px rgb(255 255 255 / 22%);
+}
+
+.record-disc__flipper {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  transition: transform 760ms var(--ease-out);
+}
+
+.record-disc.is-flipped .record-disc__flipper {
+  transform: rotateY(180deg);
+}
+
+.record-disc__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.record-disc__front {
+  background: #111;
+  box-shadow:
+    0 2.4rem 6rem rgb(0 0 0 / 70%),
+    inset 0 0 0 1px rgb(255 255 255 / 14%);
+}
+
+.record-disc__front::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 3.5rem rgb(0 0 0 / 22%),
+    inset 0 0 0 2px rgb(255 255 255 / 13%);
+  content: "";
+  pointer-events: none;
+}
+
+.record-disc__front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.record-disc__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      128deg,
+      rgb(255 255 255 / 14%),
+      transparent 24%,
+      transparent 70%,
+      rgb(255 255 255 / 5%)
+    );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.record-disc__plastic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 39%;
+  aspect-ratio: 1;
+  border: 1px solid rgb(255 255 255 / 48%);
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      132deg,
+      rgb(255 255 255 / 44%),
+      rgb(255 255 255 / 7%) 32%,
+      rgb(240 244 250 / 27%) 55%,
+      rgb(255 255 255 / 10%) 72%,
+      rgb(255 255 255 / 30%)
+    ),
+    rgb(228 235 242 / 18%);
+  box-shadow:
+    inset 0 0 0 0.45rem rgb(255 255 255 / 7%),
+    inset 0 0 2.5rem rgb(255 255 255 / 15%),
+    0 0.7rem 2.5rem rgb(0 0 0 / 32%);
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(3px) saturate(0.55);
+  -webkit-backdrop-filter: blur(3px) saturate(0.55);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.record-disc__plastic::before,
+.record-disc__plastic::after {
+  position: absolute;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.record-disc__plastic::before {
+  inset: 7%;
+  border: 1px solid rgb(255 255 255 / 30%);
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 15%),
+    0 0 0 1px rgb(255 255 255 / 10%);
+}
+
+.record-disc__plastic::after {
+  inset: 20%;
+  background:
+    linear-gradient(
+      118deg,
+      transparent 15%,
+      rgb(255 255 255 / 28%) 44%,
+      transparent 58%
+    );
+}
+
+.record-disc__hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7.2%;
+  aspect-ratio: 1;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 50%;
+  background: #050505;
+  box-shadow:
+    0 0 0 0.35rem rgb(255 255 255 / 12%),
+    0 0 0 0.8rem rgb(0 0 0 / 18%);
+  transform: translate(-50%, -50%);
+}
+
+.record-disc__back {
+  background:
+    repeating-radial-gradient(
+      circle at center,
+      transparent 0,
+      transparent 3px,
+      rgb(255 255 255 / 8%) 4px,
+      transparent 5px
+    ),
+    radial-gradient(circle at 35% 25%, #292929, #0b0b0b 58%, #010101 100%);
+  transform: rotateY(180deg);
+  box-shadow:
+    0 2.4rem 6rem rgb(0 0 0 / 70%),
+    inset 0 0 0 1px rgb(255 255 255 / 12%);
+}
+
+.record-disc__grooves {
+  position: absolute;
+  inset: 8%;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1.4rem rgb(255 255 255 / 1.5%),
+    inset 0 0 0 3.4rem rgb(255 255 255 / 1.5%),
+    inset 0 0 0 5.4rem rgb(255 255 255 / 1.5%);
+}
+
+.record-disc__back-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10%;
+  aspect-ratio: 1;
+  border: 1px solid rgb(255 255 255 / 26%);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      #151515 0,
+      #080808 3px
+    );
+  transform: translate(-50%, -50%);
+}
+
+.record-disc__error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgb(255 255 255 / 45%);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.record-scene__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 50%;
+  color: rgb(255 255 255 / 70%);
+  background: rgb(0 0 0 / 45%);
+  font-size: 0.9rem;
+  line-height: 1;
+  transform: translateY(-50%);
+  backdrop-filter: blur(8px);
+  transition:
+    color 200ms ease,
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+.record-scene__arrow:hover {
+  border-color: rgb(255 255 255 / 55%);
+  color: #fff;
+  background: rgb(0 0 0 / 70%);
+}
+
+.record-scene__arrow--previous {
+  left: clamp(1rem, 2.5vw, 2rem);
+}
+
+.record-scene__arrow--next {
+  right: clamp(1rem, 2.5vw, 2rem);
+}
+
+.record-scene__guide {
+  position: absolute;
+  right: clamp(1.25rem, 3vw, 2.5rem);
+  bottom: clamp(1.25rem, 3vw, 2.5rem);
+  left: clamp(1.25rem, 3vw, 2.5rem);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  color: rgb(255 255 255 / 42%);
+  font-size: 0.58rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.record-scene.is-opening .record-disc {
+  opacity: 0;
+  transform:
+    translate(-50%, -50%)
+    translate3d(0, 0, 24rem)
+    rotateY(0)
+    scale(1.15);
+}
+
+.record-scene.is-opening .record-scene__header,
+.record-scene.is-opening .record-scene__guide,
+.record-scene.is-opening .record-scene__arrow {
+  opacity: 0;
+}
+
+@media (max-width: 48rem) {
+  .record-disc {
+    width: min(72vw, 58svh);
+    height: min(72vw, 58svh);
+  }
+
+  .record-disc__front img {
+    object-position: center 24%;
+  }
+
+  .record-scene__arrow {
+    top: auto;
+    bottom: 2.85rem;
+    width: 2rem;
+    height: 2rem;
+    transform: none;
+  }
+
+  .record-scene__arrow--previous {
+    left: 50%;
+    transform: translateX(-2.5rem);
+  }
+
+  .record-scene__arrow--next {
+    right: 50%;
+    transform: translateX(2.5rem);
+  }
+
+  .record-scene__guide {
+    justify-content: center;
+    bottom: 0.7rem;
+  }
+
+  .record-scene__guide span:not(:first-child) {
+    display: none;
+  }
+
+  .record-scene__guide span:first-child::before {
+    content: "Swipe";
+  }
+
+  .record-scene__guide span:first-child {
+    font-size: 0;
+  }
+
+  .record-scene__guide span:first-child::before {
+    content: "Swipe to browse · Tap to open";
+    font-size: 0.58rem;
+  }
+}

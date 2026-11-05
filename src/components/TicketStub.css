@@ -1,0 +1,240 @@
+.tear-ticket {
+  --tear-x: 0px;
+  --tear-rotate: 0deg;
+  --tear-lift: 0px;
+  --tear-progress: 0;
+  position: relative;
+  width: min(70vw, 56rem);
+  aspect-ratio: 1.45;
+  perspective: 1200px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+
+.tear-ticket__plane {
+  position: absolute;
+  inset: 0;
+  transform:
+    rotateX(var(--ticket-tilt-x, 0deg))
+    rotateY(var(--ticket-tilt-y, 0deg))
+    rotateZ(1.8deg);
+  transform-style: flat;
+  transition:
+    transform 420ms var(--ease-out),
+    filter 500ms ease;
+}
+
+.tear-ticket[data-grabbing="true"] .tear-ticket__plane {
+  filter: drop-shadow(0 1.4rem 2.2rem rgb(0 0 0 / 55%));
+  transition-duration: 120ms;
+}
+
+.tear-ticket__body {
+  position: absolute;
+  inset: 0 18% 0 0;
+  overflow: hidden;
+  border: 1px solid rgb(230 240 244 / 54%);
+  border-right: 0;
+  border-radius: 0.9rem 0 0 0.9rem;
+  background: #dfe9ed;
+  box-shadow:
+    0 1.7rem 4.5rem rgb(0 0 0 / 52%),
+    inset 0 0 0 0.42rem rgb(231 242 246 / 80%);
+}
+
+.tear-ticket__body::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgb(216 233 240 / 24%), transparent 32%),
+    linear-gradient(to top, rgb(9 20 27 / 12%), transparent 28%);
+  content: "";
+  pointer-events: none;
+}
+
+.tear-ticket__body img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.72) contrast(0.96);
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.tear-ticket__stub {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  width: 18%;
+  padding: 0;
+  border: 0;
+  background: rgb(216 229 234 / 0.1%);
+  transform:
+    translate3d(var(--tear-x), calc(var(--tear-lift) * -1), 0)
+    rotate(var(--tear-rotate));
+  transform-origin: left center;
+  transition:
+    transform 520ms var(--ease-out),
+    opacity 500ms ease,
+    filter 500ms ease;
+  cursor: grab;
+  will-change: transform;
+}
+
+.tear-ticket__stub-paper {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgb(231 241 245 / 66%);
+  border-left: 0;
+  border-radius: 0 0.9rem 0.9rem 0;
+  background: #d8e5ea;
+  box-shadow:
+    0 1.7rem 4.5rem rgb(0 0 0 / 52%),
+    inset 0 0 0 0.42rem rgb(236 245 248 / 76%);
+  pointer-events: none;
+}
+
+.tear-ticket[data-grabbing="true"] .tear-ticket__stub {
+  transition-duration: 35ms;
+  cursor: grabbing;
+}
+
+.tear-ticket[data-torn="true"] .tear-ticket__stub {
+  opacity: 0;
+  filter: blur(2px);
+  transform:
+    translate3d(calc(var(--tear-x) + 14rem), -3.2rem, 0)
+    rotate(calc(var(--tear-rotate) + 18deg));
+  transition:
+    transform 900ms var(--ease-out),
+    opacity 700ms ease 180ms,
+    filter 700ms ease;
+}
+
+.tear-ticket__stub-image {
+  position: absolute;
+  inset: 0;
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: 555.56% 100%;
+  filter: saturate(0.62) brightness(1.08) contrast(0.9);
+}
+
+.tear-ticket__stub-paper::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(110deg, rgb(255 255 255 / 28%), transparent 36%),
+    rgb(210 230 237 / 14%);
+  content: "";
+  pointer-events: none;
+}
+
+.tear-ticket__stub-edge {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: -1px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(255 255 255 / 74%) 12%,
+    rgb(255 255 255 / 35%) 88%,
+    transparent
+  );
+}
+
+.tear-ticket__perforation {
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  left: 82%;
+  z-index: 6;
+  width: 12px;
+  background:
+    radial-gradient(
+      circle at center,
+      #050505 0 2.8px,
+      transparent 3.3px
+    )
+    center top / 12px 18px repeat-y;
+  opacity: calc(1 - var(--tear-progress) * 0.55);
+  transform: translateX(-6px);
+  pointer-events: none;
+}
+
+.tear-ticket__notch {
+  position: absolute;
+  left: 82%;
+  z-index: 7;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: #050505;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.tear-ticket__notch--top {
+  top: -0.6rem;
+}
+
+.tear-ticket__notch--bottom {
+  bottom: -0.6rem;
+}
+
+.tear-ticket__fibres {
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  left: calc(82% - 0.75rem);
+  z-index: 5;
+  width: 1.5rem;
+  background:
+    repeating-linear-gradient(
+      94deg,
+      transparent 0 3px,
+      rgb(249 252 253 / 55%) 4px,
+      transparent 5px 7px
+    );
+  opacity: calc(var(--tear-progress) * 0.72);
+  transform: rotate(var(--tear-rotate));
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.tear-ticket__error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #30414a;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 48rem) {
+  .tear-ticket {
+    width: min(88vw, 32rem);
+  }
+
+  .tear-ticket__body {
+    box-shadow:
+      0 1.2rem 3rem rgb(0 0 0 / 50%),
+      inset 0 0 0 0.28rem rgb(231 242 246 / 80%);
+  }
+
+  .tear-ticket__stub-paper {
+    box-shadow:
+      0 1.2rem 3rem rgb(0 0 0 / 50%),
+      inset 0 0 0 0.28rem rgb(236 245 248 / 76%);
+  }
+}

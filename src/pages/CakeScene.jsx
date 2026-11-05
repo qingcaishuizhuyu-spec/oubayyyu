@@ -6,7 +6,7 @@ import './CakeScene.css'
 
 const SCROLL_TARGET = 160
 
-export default function CakeScene({ onComplete }) {
+export default function CakeScene({ imageSrc = assets.cake, onComplete }) {
   const reducedMotion = useReducedMotion()
   const [leaving, setLeaving] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -103,7 +103,7 @@ export default function CakeScene({ onComplete }) {
         '--cake-scale': 1 + progress * 0.3,
       }}
     >
-      <CakeMosaic src={assets.cake} reducedMotion={reducedMotion} />
+      <CakeMosaic src={imageSrc} reducedMotion={reducedMotion} />
       <div className="cake-scene__veil" aria-hidden="true" />
       <p
         id="cake-instruction"

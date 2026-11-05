@@ -1,20 +1,39 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import AppShell from './components/AppShell.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import SceneManager from './components/SceneManager.jsx'
 import CakeScene from './pages/CakeScene.jsx'
+import CakePickerScene from './pages/CakePickerScene.jsx'
 import EnvelopeScene from './pages/EnvelopeScene.jsx'
 import RecordScene from './pages/RecordScene.jsx'
 import VideoScene from './pages/VideoScene.jsx'
+import { assets } from './utils/assets.js'
 import { tracks } from './utils/tracks.js'
 
 export default function App() {
+  const [selectedCake, setSelectedCake] = useState(null)
+
   const scenes = useMemo(
     () => [
       {
+        id: 'cake-picker',
+        render: ({ goToScene }) => (
+          <CakePickerScene
+            cakes={assets.cakeChoices}
+            onSelect={(imageSrc) => {
+              setSelectedCake(imageSrc)
+              goToScene('cake')
+            }}
+          />
+        ),
+      },
+      {
         id: 'cake',
         render: ({ goToScene }) => (
-          <CakeScene onComplete={() => goToScene('envelope')} />
+          <CakeScene
+            imageSrc={selectedCake ?? assets.cake}
+            onComplete={() => goToScene('envelope')}
+          />
         ),
       },
       {
@@ -42,13 +61,13 @@ export default function App() {
         ),
       })),
     ],
-    [],
+    [selectedCake],
   )
 
   return (
     <ErrorBoundary>
       <AppShell>
-        <SceneManager scenes={scenes} initialSceneId="cake" />
+        <SceneManager scenes={scenes} initialSceneId="cake-picker" />
       </AppShell>
     </ErrorBoundary>
   )
